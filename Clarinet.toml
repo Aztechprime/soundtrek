@@ -12,6 +12,10 @@ depends_on = []
 path = "contracts/sound-trek-marketplace.clar"
 depends_on = []
 
+[contracts.sound-trek-social]
+path = "contracts/sound-trek-social.clar"
+depends_on = []
+
 [repl]
 costs_version = 2
 parser_version = 2
