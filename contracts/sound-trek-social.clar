@@ -500,57 +500,7 @@
   )
 )
 
-;; Share a recommendation (creates a special playlist)
-(define-public (share-recommendation 
-                 (title (string-utf8 100))
-                 (description (optional (string-utf8 500)))
-                 (content-ids (list 20 uint)))
-  (let
-    (
-      (owner tx-sender)
-      (playlist-id (var-get next-playlist-id))
-    )
-    ;; Create recommendation playlist
-    (map-set playlists
-      {playlist-id: playlist-id, owner: owner}
-      {
-        name: title,
-        description: description,
-        public: true, ;; Recommendations are always public
-        created-at: block-height,
-        updated-at: block-height,
-        content-count: (len content-ids)
-      }
-    )
-    
-    ;; Increment playlist ID counter
-    (var-set next-playlist-id (+ playlist-id u1))
-    
-    ;; Add all content to the playlist
-    (map add-content-to-recommendation 
-      content-ids 
-      (list u20 playlist-id playlist-id playlist-id playlist-id playlist-id
-             playlist-id playlist-id playlist-id playlist-id playlist-id
-             playlist-id playlist-id playlist-id playlist-id playlist-id
-             playlist-id playlist-id playlist-id playlist-id playlist-id))
-    
-    (ok playlist-id)
-  )
-)
 
-;; Helper function for adding content to recommendation playlist
-(define-private (add-content-to-recommendation (content-id uint) (playlist-id uint))
-  (begin
-    (if (content-exists content-id)
-      (map-set playlist-contents
-        {playlist-id: playlist-id, content-id: content-id}
-        {added-at: block-height}
-      )
-      none
-    )
-    playlist-id
-  )
-)
 
 ;; Update playlist visibility
 (define-public (update-playlist-visibility (playlist-id uint) (public bool))
